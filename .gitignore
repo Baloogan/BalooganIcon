@@ -1,0 +1,8 @@
+bin/
+obj/
+.dropbox
+desktop.ini
+/packages/
+!packages/repositories.config
+*.sdf
+*.opensdf
