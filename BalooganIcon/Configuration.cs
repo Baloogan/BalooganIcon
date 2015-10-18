@@ -18,7 +18,7 @@ namespace BalooganIcon
         public List<ColorSetting> colors = new List<ColorSetting>();
         public static Configuration Load()
         {
-            const string settings_filename = "ColorSplitter.ini";
+            const string settings_filename = "BalooganIcon.ini";
             if (!File.Exists(settings_filename))
             {
                 var default_conf = new Configuration();
