@@ -1,22 +1,22 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
-namespace ColorSplitter
+namespace BalooganIcon
 {
-    class ColorSetting
+    public class ColorSetting
     {
         public string name;
         public Color color;
     }
-    class Configuration
+    public class Configuration
     {
         public List<ColorSetting> colors = new List<ColorSetting>();
-    }
-    class Program
-    {
-        static void Main(string[] args)
+        public static Configuration Load()
         {
             const string settings_filename = "ColorSplitter.ini";
             if (!File.Exists(settings_filename))
@@ -28,22 +28,14 @@ namespace ColorSplitter
                 default_conf.colors.Add(new ColorSetting() { name = "unknown", color = Color.FromArgb(255, 254, 254, 128) });
                 default_conf.colors.Add(new ColorSetting() { name = "neutral", color = Color.FromArgb(255, 136, 254, 136) });
                 File.WriteAllText(settings_filename, Newtonsoft.Json.JsonConvert.SerializeObject(default_conf, Newtonsoft.Json.Formatting.Indented));
+                return default_conf;
             }
-
-            Configuration conf = Newtonsoft.Json.JsonConvert.DeserializeObject<Configuration>(File.ReadAllText(settings_filename));
-
-            var orig_filename = args[0];
-            var bmp = new Bitmap(orig_filename);
-            var pixels = from x in Enumerable.Range(0, bmp.Width - 1)
-                         from y in Enumerable.Range(0, bmp.Height - 1)
-                         select new { z = bmp.GetPixel(x, y), x, y };
-            foreach (var co in conf.colors)
+            else
             {
-                foreach (var p in pixels)
-                    bmp.SetPixel(p.x, p.y, Color.FromArgb(p.z.A, co.color.R, co.color.G, co.color.B)); // note using original alpha
-                string filename = orig_filename.Replace(".png", $"_{co.name}.png");
-                bmp.Save(filename);
+                Configuration conf = Newtonsoft.Json.JsonConvert.DeserializeObject<Configuration>(File.ReadAllText(settings_filename));
+                return conf;
             }
         }
+
     }
 }
